@@ -17,25 +17,63 @@
 
 {% block content %}
 
-    <h1>Flask Demo App with Turso DB and User Accounts</h1>
+<h1>To Do List</h1>
 
-    <p>This is a simple Flask app that connects to a Turso database to save and retrieve data, and also manage user accounts. This can be used as the basis of your web app.</p>
+<article>
+    {% for task in tasks %}
+        <p class="task">
+        <span class="priority">{{ task.priority }}</span>
+        <span class="name">{{ task.name }}</span>
 
-    <p>It includes...</p>
+        {# Show a checkbox and fill it in if the task is completed #}
+        {% if task.completed %}
+            <a href="/complete/{{ task.id }}">🗹</a>
+        {% else %}
+            <a href="/complete/{{ task.id }}">☐</a>
+        {% endif %}
 
-    <ul>
-        <li>Example routes</li>
-        <li>Example static pages</li>
-        <li>Missing page and server error pages</li>
-        <li>DB connection and error handling</li>
-        <li>Example CRUD actions: Create and Delete</li>
-        <li>User account creation</li>
-        <li>User login / logout</li>
-        <li>Adaption of menus / routes / content based on login status</li>
-        <li>Flash messages for information</li>
-    </ul>
+        </p>
+    {% endfor %}
+</article>
 
-    <a href="/things" role="button">Go to the Things...</a>
+{# Show a form to add new tasks if the user is logged in #}
+    {% if session.user_id %}
+
+        <article>
+
+            <h3>Add a New Thing...</h3>
+
+            <form action="/add" method="POST">
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="New Task"
+                    required
+                >
+
+                <select
+                    type="number"
+                    name="priority"
+                    min="0"
+                    placeholder="Priority"
+                    required
+                >
+                    <option value=1>1</option>
+                    <option value=2>2</option>
+                    <option value=3>3</option>
+                    <option value=4>4</option>
+                    <option value=5>5</option>
+                </select>
+
+                <button>Add the Thing</button>
+
+            </form>
+
+        </article>
+
+    {% endif %}
+
 
 {% endblock %}
 
