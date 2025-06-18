@@ -34,14 +34,17 @@ def index():
                    tasks.name,
                    tasks.priority,
                    tasks.completed,
+                   tasks.user_id,
                    users.name AS owner
 
-            FROM tasks
+            FROM tasks 
             JOIN users ON tasks.user_id = users.id
+            WHERE tasks.user_id = ?
 
-            ORDER BY tasks.name ASC
+            ORDER BY tasks.completed ASC, tasks.priority DESC
         """
-        result = client.execute(sql)
+        values = [session["user_id"]] if "user_id" in session else [0]
+        result = client.execute(sql, values)
         tasks = result.rows
 
         # And show them on the page
@@ -162,7 +165,7 @@ def add_a_task():
 @login_required
 def toggle_complete(id):
     with connect_db() as client:
-        # Delete the thing from the DB only if we own it
+        # Update the task only if we're loggin in
         sql = "UPDATE tasks SET completed = NOT completed WHERE id = ? AND user_id=?;"
         values = [id, session["user_id"]]
         client.execute(sql, values)
@@ -181,13 +184,13 @@ def toggle_complete(id):
 def delete_a_thing(id):
     with connect_db() as client:
         # Delete the thing from the DB only if we own it
-        sql = "DELETE FROM things WHERE id=? AND user_id=?"
+        sql = "DELETE FROM tasks WHERE id=? AND user_id=?"
         values = [id, session["user_id"]]
         client.execute(sql, values)
 
         # Go back to the home page
         flash("Thing deleted", "warning")
-        return redirect("/things")
+        return redirect("/")
 
 
 #-----------------------------------------------------------

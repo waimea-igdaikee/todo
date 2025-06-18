@@ -18,23 +18,31 @@
 {% block content %}
 
 <h1>To Do List</h1>
-
+{# Show tasks if logged in #}
 <article>
-    {% for task in tasks %}
-        <p class="task">
-        <span class="priority">{{ task.priority }}</span>
-        <span class="name">{{ task.name }}</span>
+    {% if session.user_id %}
+        {% for task in tasks %}
+            <p class="task">
+            <span class="priority">{{ task.priority }}</span>
 
-        {# Show a checkbox and fill it in if the task is completed #}
-        {% if task.completed %}
-            <a href="/complete/{{ task.id }}">🗹</a>
-        {% else %}
-            <a href="/complete/{{ task.id }}">☐</a>
-        {% endif %}
+            {# Show a checkbox and fill it in if the task is completed #}
+            {# Also strikethrough #}
+            {% if task.completed %}
+                <span class="name completed">{{ task.name }}</span>
+                <a href="/complete/{{ task.id }}">🗹</a>
+                <a href="/delete/{{ task.id }}">Delete</a>
+            {% else %}
+                <span class="name">{{ task.name }}</span>
+                <a href="/complete/{{ task.id }}">☐</a>
+            {% endif %}
 
-        </p>
-    {% endfor %}
-</article>
+            </p>
+        {% endfor %}
+    {% else %}
+        <h4>Please log in or register to start creating tasks.</h4>
+    {% endif %}
+    </article>
+
 
 {# Show a form to add new tasks if the user is logged in #}
     {% if session.user_id %}
@@ -43,32 +51,34 @@
 
             <h3>Add a New Thing...</h3>
 
-            <form action="/add" method="POST">
+            <form action="/add" method="POST" id="task-form">
+                <fieldset role="group">
 
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="New Task"
-                    required
-                >
+                    <input
+                        type="text"
+                        name="name"
+                        placeholder="New Task"
+                        required
+                    >
 
-                <select
-                    type="number"
-                    name="priority"
-                    min="0"
-                    placeholder="Priority"
-                    required
-                >
-                    <option value=1>1</option>
-                    <option value=2>2</option>
-                    <option value=3>3</option>
-                    <option value=4>4</option>
-                    <option value=5>5</option>
-                </select>
+                    <select
+                        id="priority"
+                        type="number"
+                        name="priority"
+                        required
+                    >
+                        <option hidden disabled selected value>Priority</option>
+                        <option value=1>1</option>
+                        <option value=2>2</option>
+                        <option value=3>3</option>
+                        <option value=4>4</option>
+                        <option value=5>5</option>
+                    </select>
 
-                <button>Add the Thing</button>
+                    <button>Add</button>
 
-            </form>
+                </form>
+            </fieldset>
 
         </article>
 

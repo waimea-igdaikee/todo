@@ -2,6 +2,13 @@
   User stylesheet - Building upon PicoCSS
 =====================================================*/
 
+/* GENERAL --------------------------- */
+
+body {
+    max-width: 700px !important;
+    margin: auto;
+}
+
 
 /* ABOUT PAGE -------------------------------------------- */
 
@@ -33,3 +40,22 @@
 #messages .message.success { color: var(--pico-ins-color); }
 #messages .message.error   { color: var(--pico-del-color); }
 
+
+/* TASK DISPLAY AND FORM ------------------------------ */
+
+#task-form {
+    display: flex;
+}
+
+#task-form * {
+    height: 100%;
+}
+
+#priority {
+    width: 40%;
+}
+
+.completed {
+    color: var(--pico-muted-color);
+    text-decoration: line-through;
+}
